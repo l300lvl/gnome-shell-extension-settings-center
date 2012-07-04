@@ -1,0 +1,10 @@
+{
+  "description": "Settings shortcuts : gnome-tweak-tool, dconf-editor, gconf-editor, gnome-session-properties, gnome-shell-extension-prefs, seahorse and nvidia-settings.\nYou can add your own\n\nSources : http://svn.xesnet.fr/gnomeextensions", 
+  "name": "SettingsCenter", 
+  "shell-version": [
+    "3.4"
+  ], 
+  "url": "", 
+  "uuid": "SettingsCenter@xesnet.fr", 
+  "version": 5
+}
