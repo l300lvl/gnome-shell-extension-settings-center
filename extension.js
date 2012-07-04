@@ -7,6 +7,7 @@ const Util = imports.misc.util;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Lib = Extension.imports.lib;
 const MenuItems = Extension.imports.menu_items;
+const SubMenu = Extension.imports.submenu;
 
 const schema = "org.gnome.shell.extensions.SettingsCenter";
 
@@ -105,7 +106,7 @@ SettingsCenter.prototype =
         
 	if (this.replaceMenu || this.items.length > 0)
 	{
-            this.settingsCenterMenu = new PopupMenu.PopupSubMenuMenuItem(_(this.settings.get_string("label-menu")));
+            this.settingsCenterMenu = new SubMenu.PopupSubMenuMenuItem(_(this.settings.get_string("label-menu")));
 
 	    //Add new menu to status area
 	    userMenu.menu.addMenuItem(this.settingsCenterMenu, index + 1);
