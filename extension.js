@@ -1,4 +1,7 @@
+/* original author Xes. 3.6/3.8 fork l300lvl. replace system settings menu credit: IsacDaavid */
+
 const St = imports.gi.St;
+const Config = imports.misc.config;
 const Main = imports.ui.main;
 const Lang = imports.lang;
 const Shell = imports.gi.Shell;
@@ -7,14 +10,38 @@ const Util = imports.misc.util;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Lib = Extension.imports.lib;
 const MenuItems = Extension.imports.menu_items;
-const SubMenu = Extension.imports.submenu;
 
 const schema = "org.gnome.shell.extensions.SettingsCenter";
 
+let userMenu, age;
+
 function init(extensionMeta)
 {
+    let current_version = Config.PACKAGE_VERSION.split('.');
+    if (current_version.length > 4 || current_version[0] != 3) throw new Error("Strange version number (extension.js:21).");
+    
+    switch (current_version[1]) {
+        case"4": age = "old";
+        break;
+        case"5": global.log("Warning of extension [" + metadata.uuid + "]:\n              Development release detected (" + Config.PACKAGE_VERSION + "). Loading as a 3.6 release.\n"); //eak
+        case"6": age = "new";
+        break;
+        case"8": age = "new2";
+        break;
+        case"10": age = "new3";
+        break;
+        default: throw new Error("Strange version number (extension.js:31).");
+    }
+
+    if (age=="old")      userMenu = Main.panel._statusArea.userMenu;
+    else if (age=="new") userMenu = Main.panel.statusArea.userMenu;
+    else if (age=="new2") userMenu = Main.panel.statusArea.userMenu;
+    else                 userMenu = Main.panel.statusArea.aggregateMenu
+
     return new SettingsCenter(extensionMeta, schema);
 }
+
+let new4;
 
 function SettingsCenter(extensionMeta, schema)
 {
@@ -76,11 +103,12 @@ SettingsCenter.prototype =
 	let menuItems = new MenuItems.MenuItems(this.settings);
         this.items = menuItems.getEnableItems();
 
-        let userMenu = Main.panel._statusArea.userMenu;
-
-	//Find System Settings menu position
         let index = null;
         let menuItems = userMenu.menu._getMenuItems();
+	//Find System Settings menu position, "Settings" on > 3.8 and 3.10
+        if (age=="new2")      new4 = "Settings";
+        else if (age=="new3") new4 = "System Settings";
+        else                  new4 = "System Settings";
         for (let i = 0; i < menuItems.length; i++)
         {    
 	    if (
@@ -88,7 +116,7 @@ SettingsCenter.prototype =
 		    && typeof (menuItems[i]._children[0]) == "object"
 		    && typeof (menuItems[i]._children[0].actor) == "object"
 		    && typeof (menuItems[i]._children[0].actor.get_text) == "function"
-		    && menuItems[i]._children[0].actor.get_text() == _("System Settings"))
+		    && menuItems[i]._children[0].actor.get_text() == _(new4))
 	    {
                 index = i;
                 break;
@@ -106,7 +134,7 @@ SettingsCenter.prototype =
         
 	if (this.replaceMenu || this.items.length > 0)
 	{
-            this.settingsCenterMenu = new SubMenu.PopupSubMenuMenuItem(_(this.settings.get_string("label-menu")));
+            this.settingsCenterMenu = new PopupMenu.PopupSubMenuMenuItem(_(this.settings.get_string("label-menu")));
 
 	    //Add new menu to status area
 	    userMenu.menu.addMenuItem(this.settingsCenterMenu, index + 1);
@@ -118,7 +146,7 @@ SettingsCenter.prototype =
 	    {
 		menuItems[index].destroy();
 		
-		let item = new PopupMenu.PopupMenuItem(_("System Settings"));
+		let item = new PopupMenu.PopupMenuItem(_(new4));
 		item.connect("activate", Lang.bind(this, this.onPreferencesActivate));
 		this.settingsCenterMenu.menu.addMenuItem(item, i++);
 	    }
@@ -141,8 +169,6 @@ SettingsCenter.prototype =
 
     disable: function()
     {
-        let userMenu = Main.panel._statusArea.userMenu;
-
 	//Remove setting Signals
 	this.settingSignals.forEach(
 	    function(signal)
@@ -171,7 +197,7 @@ SettingsCenter.prototype =
 	//Add original menu if necessary
 	if (this.replaceMenu)
 	{
-            let item = new PopupMenu.PopupMenuItem(_("System Settings"));
+            let item = new PopupMenu.PopupMenuItem(_(new4));
             item.connect("activate", Lang.bind(this, this.onPreferencesActivate));
 	    userMenu.menu.addMenuItem(item, index);
 	}
