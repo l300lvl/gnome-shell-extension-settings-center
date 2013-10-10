@@ -33,10 +33,10 @@ function init(extensionMeta)
         default: throw new Error("Strange version number (extension.js:31).");
     }
 
-    if (age=="old")      userMenu = Main.panel._statusArea.userMenu;
-    else if (age=="new") userMenu = Main.panel.statusArea.userMenu;
+    if (age=="old")       userMenu = Main.panel._statusArea.userMenu;
+    else if (age=="new")  userMenu = Main.panel.statusArea.userMenu;
     else if (age=="new2") userMenu = Main.panel.statusArea.userMenu;
-    else                 userMenu = Main.panel.statusArea.aggregateMenu
+    else                  userMenu = Main.panel.statusArea.aggregateMenu
 
     return new SettingsCenter(extensionMeta, schema);
 }
@@ -105,9 +105,9 @@ SettingsCenter.prototype =
 
         let index = null;
         let menuItems = userMenu.menu._getMenuItems();
-	//Find System Settings menu position, "Settings" on > 3.8 and 3.10
+	//Find System Settings menu position, "Settings" on > 3.8
+	//No option required for 3.10, settings is now a button.
         if (age=="new2")      new4 = "Settings";
-        else if (age=="new3") new4 = "System Settings";
         else                  new4 = "System Settings";
         for (let i = 0; i < menuItems.length; i++)
         {    
