@@ -30,6 +30,8 @@ function init(extensionMeta)
         break;
         case"10": age = "new3";
         break;
+        case"12": age = "new4";
+        break;
         default: throw new Error("Strange version number (extension.js:31).");
     }
 
@@ -41,7 +43,7 @@ function init(extensionMeta)
     return new SettingsCenter(extensionMeta, schema);
 }
 
-let new4;
+let new5;
 
 function SettingsCenter(extensionMeta, schema)
 {
@@ -107,8 +109,8 @@ SettingsCenter.prototype =
         let menuItems = userMenu.menu._getMenuItems();
 	//Find System Settings menu position, "Settings" on > 3.8
 	//No option required for 3.10, settings is now a button.
-        if (age=="new2")      new4 = "Settings";
-        else                  new4 = "System Settings";
+        if (age=="new2")      new5 = "Settings";
+        else                  new5 = "System Settings";
         for (let i = 0; i < menuItems.length; i++)
         {    
 	    if (
@@ -116,7 +118,7 @@ SettingsCenter.prototype =
 		    && typeof (menuItems[i]._children[0]) == "object"
 		    && typeof (menuItems[i]._children[0].actor) == "object"
 		    && typeof (menuItems[i]._children[0].actor.get_text) == "function"
-		    && menuItems[i]._children[0].actor.get_text() == _(new4))
+		    && menuItems[i]._children[0].actor.get_text() == _(new5))
 	    {
                 index = i;
                 break;
@@ -146,7 +148,7 @@ SettingsCenter.prototype =
 	    {
 		menuItems[index].destroy();
 		
-		let item = new PopupMenu.PopupMenuItem(_(new4));
+		let item = new PopupMenu.PopupMenuItem(_(new5));
 		item.connect("activate", Lang.bind(this, this.onPreferencesActivate));
 		this.settingsCenterMenu.menu.addMenuItem(item, i++);
 	    }
@@ -197,7 +199,7 @@ SettingsCenter.prototype =
 	//Add original menu if necessary
 	if (this.replaceMenu)
 	{
-            let item = new PopupMenu.PopupMenuItem(_(new4));
+            let item = new PopupMenu.PopupMenuItem(_(new5));
             item.connect("activate", Lang.bind(this, this.onPreferencesActivate));
 	    userMenu.menu.addMenuItem(item, index);
 	}
