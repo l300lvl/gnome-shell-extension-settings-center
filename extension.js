@@ -130,7 +130,7 @@ SettingsCenter.prototype =
 	//If no find, set the position arbitrary and force "replace menu" to Off
 	if (index == null)
 	{
-	    index = 4;
+	    index = 5;
 	    this.replaceMenu = false;
 	}
         
